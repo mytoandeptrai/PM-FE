@@ -1,4 +1,4 @@
-import { LatoFont } from '@/assets/local-fonts';
+import { fontSans } from '@/assets/fonts';
 import { siteConfig } from '@/config';
 import { Provider } from '@/providers';
 import '@/styles/globals.css';
@@ -14,10 +14,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const className = `${LatoFont.variable}`;
-
   return (
-    <html lang="en" suppressHydrationWarning className={className}>
+    <html lang="en" suppressHydrationWarning className={fontSans.className}>
       <body>
         <Provider>{children}</Provider>
       </body>
