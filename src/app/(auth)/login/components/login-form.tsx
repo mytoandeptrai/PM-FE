@@ -21,7 +21,8 @@ const LoginForm = () => {
   const { mutate, isLoading } = useMutation(loginRequest, {
     onSuccess: async (response) => {
       if (response) {
-        await loginServerRequest(response);
+        const res = await loginServerRequest(response);
+        console.log('🚀 ~ onSuccess: ~ res:', res);
       }
     },
     onError: (error: any) => {
@@ -43,9 +44,7 @@ const LoginForm = () => {
 
   const { control } = formHandler;
 
-  const onSubmit = async (values: LoginBodyType) => {
-    mutate(values);
-  };
+  const onSubmit = async (values: LoginBodyType) => {};
 
   return (
     <FormWrapper form={formHandler} onSubmit={onSubmit}>
