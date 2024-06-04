@@ -1,9 +1,10 @@
 'use client';
 
+import { loginRequest, loginServerRequest } from '@/api/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { TextField } from '@/components/shared/forms';
@@ -16,7 +17,21 @@ import { LoginBody, LoginBodyType } from '@/app/(auth)/login/config';
 const LoginForm = () => {
   const router = useRouter();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+
+  const { mutate, isLoading } = useMutation(loginRequest, {
+    onSuccess: async (response) => {
+      if (response) {
+        await loginServerRequest(response);
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        description: error?.payload?.message ?? 'Error message',
+        variant: 'destructive',
+        duration: 5000,
+      });
+    },
+  });
 
   const formHandler = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
@@ -29,7 +44,7 @@ const LoginForm = () => {
   const { control } = formHandler;
 
   const onSubmit = async (values: LoginBodyType) => {
-    console.log('🚀 ~ onSubmit ~ values:', values);
+    mutate(values);
   };
 
   return (
@@ -54,7 +69,7 @@ const LoginForm = () => {
           <Link href="register" className="text-xs text-blue-400 hover:underline">
             {"Don't have account? Register here"}
           </Link>
-          <Button className="w-full" type="submit">
+          <Button className="w-full" type="submit" disabled={isLoading}>
             Login
           </Button>
         </div>
